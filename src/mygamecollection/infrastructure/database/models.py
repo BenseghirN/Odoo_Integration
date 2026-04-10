@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 from .base import Base
 
 class GameModel(Base):
@@ -13,4 +13,4 @@ class GameModel(Base):
     cover_url = Column(String)
     # genres = Column(String)
     # platforms  Column(String)
-    created_at = Column(DateTime, default=datetime.now(datetime.timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
