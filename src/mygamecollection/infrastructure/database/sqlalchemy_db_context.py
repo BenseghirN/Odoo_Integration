@@ -1,26 +1,28 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from mygamecollection.application.interfaces.db_context import IGameCollectionDbContext
 
-class SQLAlchemyGameCollectionDbContext:
-    def __init__(self, session: Session):
+
+class SQLAlchemyGameCollectionDbContext(IGameCollectionDbContext):
+    def __init__(self, session: AsyncSession):
         self._session = session
 
     def add(self, obj) -> None:
         self._session.add(obj)
 
-    def commit(self) -> None:
-        self._session.commit()
+    async def commit(self) -> None:
+        await self._session.commit()
 
-    def refresh(self, obj) -> None:
-        self._session.refresh(obj)
+    async def refresh(self, obj) -> None:
+        await self._session.refresh(obj)
 
-    def execute(self, query):
-        return self._session.execute(query)
+    async def execute(self, statement):
+        return await self._session.execute(statement)
 
     def delete(self, obj) -> None:
         self._session.delete(obj)
 
-    def rollback(self) -> None:
-        self._session.rollback()
+    async def rollback(self) -> None:
+        await self._session.rollback()
 
-    def close(self) -> None:
-        self._session.close()
+    async def close(self) -> None:
+        await self._session.close()
