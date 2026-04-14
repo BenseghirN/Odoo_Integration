@@ -7,15 +7,17 @@ class SearchGamesUseCase:
         self.igdb_client = igdb_client
 
     async def execute(self, query: str):
-        results = await self.igdb_client.search_games(query)
-
-        return [
-            SearchGamesResultDto(
-                igdb_id=game.get("id"),
-                name=game.get("name"),
-                summary=game.get("summary"),
-                cover_url=game.get("cover", {}).get("url") if game.get("cover") else None,
-                release_date=game.get("first_release_date"),
-            )
-            for game in results
-        ]
+        try:
+            results = await self.igdb_client.search_games(query)
+            return [
+                SearchGamesResultDto(
+                    igdb_id=game.get("id"),
+                    name=game.get("name"),
+                    summary=game.get("summary"),
+                    cover_url=game.get("cover", {}).get("url") if game.get("cover") else None,
+                    release_date=game.get("first_release_date"),
+                )
+                for game in results
+            ]
+        except Exception as err:
+            raise Exception("An error occurred while searching games", err)

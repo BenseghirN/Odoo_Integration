@@ -1,5 +1,8 @@
 import asyncio
 from dotenv import load_dotenv
+
+from mygamecollection.domain.entities.game import Game
+
 load_dotenv()
 
 from mygamecollection.infrastructure.database.session import SessionLocal
@@ -14,8 +17,10 @@ async def main():
     igdb_client = IgdbClient(twitch_auth_client)
     search_games = SearchGamesUseCase(igdb_client)
 
-    results = await search_games.execute("God Of War")
-    print(results)
+    results = await search_games.execute(input("What game do you want to search?: "))
+
+    for result in results:
+        print(result.name)
 
 if __name__ == "__main__":
     asyncio.run(main())

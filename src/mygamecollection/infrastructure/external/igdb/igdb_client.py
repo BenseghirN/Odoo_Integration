@@ -1,5 +1,6 @@
 import os
 import httpx
+from urllib3.exceptions import HTTPError
 
 from mygamecollection.infrastructure.external.igdb.twitch_auth_client import TwitchAuthClient
 
@@ -25,14 +26,16 @@ class IgdbClient:
             search "{query}";
             limit 10;
         """
+        try:
+            async with httpx.AsyncClient(
+                    headers={"Client-ID": self.client_id, "Authorization": f"Bearer {token}"}
+            ) as client:
+                response = await client.post(
+                    f"{self.base_url}/games",
+                    content=body.strip()
+                )
 
-        async with httpx.AsyncClient(
-                headers={"Client-ID": self.client_id, "Authorization": f"Bearer {token}"}
-        ) as client:
-            response = await client.post(
-                f"{self.base_url}/games",
-                content=body.strip()
-            )
-
-            response.raise_for_status()
-            return response.json()
+                response.raise_for_status()
+                return response.json()
+        except httpx.HTTPStatusError as e:
+            raise HTTPError(f"Connection error: {e}")

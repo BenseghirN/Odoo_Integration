@@ -13,18 +13,20 @@ class TwitchAuthClient:
             raise ValueError('Client ID not provided')
         if not self.client_secret:
             raise ValueError('Client secret not provided')
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    self.token_url,
+                    params={
+                        'client_id': self.client_id,
+                        'client_secret': self.client_secret,
+                        'grant_type': 'client_credentials'
+                    }
+                )
 
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                self.token_url,
-                params={
-                    'client_id': self.client_id,
-                    'client_secret': self.client_secret,
-                    'grant_type': 'client_credentials'
-                }
-            )
+                response.raise_for_status()
 
-            response.raise_for_status()
-
-            data = response.json()
-            return data['access_token']
+                data = response.json()
+                return data['access_token']
+        except Exception as err:
+            raise Exception("An error occurred while getting the access token", err)
