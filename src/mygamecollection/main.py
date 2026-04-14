@@ -1,25 +1,21 @@
-from mygamecollection.application.interfaces.db_context import IGameCollectionDbContext
-from mygamecollection.application.use_cases.games.get_all_games import GetAllGamesAsync
-from mygamecollection.infrastructure.database.session import SessionLocal
-from mygamecollection.infrastructure.database.sqlalchemy_db_context import SQLAlchemyGameCollectionDbContext
 import asyncio
+from dotenv import load_dotenv
+load_dotenv()
+
+from mygamecollection.infrastructure.database.session import SessionLocal
+from mygamecollection.application.use_cases.games.search_games import SearchGamesUseCase
+from mygamecollection.infrastructure.external.igdb.igdb_client import IgdbClient
+from mygamecollection.infrastructure.external.igdb.twitch_auth_client import TwitchAuthClient
+
+
 
 async def main():
-    async with SessionLocal() as session:
-        db_context: IGameCollectionDbContext = SQLAlchemyGameCollectionDbContext(session)
-        try:
-            print(f"DbContext initialized: {db_context}")
-            use_case = GetAllGamesAsync(db_context)
-            games = await use_case.execute()
+    twitch_auth_client = TwitchAuthClient()
+    igdb_client = IgdbClient(twitch_auth_client)
+    search_games = SearchGamesUseCase(igdb_client)
 
-            print(f"{len(games)} game(s) found")
-            for game in games:
-                print(f"{game.id} - {game.igdb_id} - {game.name}")
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-        finally:
-            await db_context.close()
+    results = await search_games.execute("God Of War")
+    print(results)
 
 if __name__ == "__main__":
     asyncio.run(main())
