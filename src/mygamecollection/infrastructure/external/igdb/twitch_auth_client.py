@@ -27,6 +27,9 @@ class TwitchAuthClient:
                 response.raise_for_status()
 
                 data = response.json()
+                if "access_token" not in data:
+                    raise Exception('Invalid response from Twitch API: no access_token provided')
+
                 return data['access_token']
         except Exception as err:
             raise Exception("An error occurred while getting the access token", err)

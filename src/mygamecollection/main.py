@@ -1,16 +1,10 @@
 import asyncio
 from dotenv import load_dotenv
 
-from mygamecollection.domain.entities.game import Game
-
 load_dotenv()
-
-from mygamecollection.infrastructure.database.session import SessionLocal
 from mygamecollection.application.use_cases.games.search_games import SearchGamesUseCase
 from mygamecollection.infrastructure.external.igdb.igdb_client import IgdbClient
 from mygamecollection.infrastructure.external.igdb.twitch_auth_client import TwitchAuthClient
-
-
 
 async def main():
     twitch_auth_client = TwitchAuthClient()
