@@ -1,5 +1,8 @@
 from dataclasses import dataclass, field
 
+from mygamecollection.domain.entities.user import User
+
+
 @dataclass
 class Game:
     igdb_id: int
@@ -8,6 +11,11 @@ class Game:
     release_date: str | None = None
     cover_url: str | None = None
     id: int | None = None
+    users: list[User] = field(default_factory=list)
+
+    def __post_init__(self):
+        if not self.name.strip():
+            raise ValueError("Game name cannot be empty")
 
     @classmethod
     def create(
@@ -22,11 +30,11 @@ class Game:
             raise ValueError("Game name cannot be empty")
 
         return cls(
-            igdb_id,
-            name,
-            summary,
-            release_date,
-            cover_url)
+            igdb_id = igdb_id,
+            name = name,
+            summary = summary,
+            release_date = release_date,
+            cover_url = cover_url)
 
     def update(
             self,
@@ -37,6 +45,7 @@ class Game:
     ):
         if not name.strip():
             raise ValueError("Game name cannot be empty")
+
         self.name = name
         self.summary = summary
         self.release_date = release_date

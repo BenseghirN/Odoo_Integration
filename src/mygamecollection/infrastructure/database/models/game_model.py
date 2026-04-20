@@ -1,10 +1,14 @@
-from typing import Optional
-from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy import Integer, String, Text, DateTime
+from typing import List
+
+from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy import Integer, String, Text, DateTime, UniqueConstraint
 from datetime import datetime, timezone
 
 from mygamecollection.infrastructure.database.base import Base
 from mygamecollection.domain.entities.game import Game
+from mygamecollection.infrastructure.database.models import UserModel
+from mygamecollection.infrastructure.database.models.user_game_model import user_games_table
+
 
 class GameModel(Base):
     __tablename__ = "games"
@@ -18,6 +22,7 @@ class GameModel(Base):
     # genres = Column(String)
     # platforms  Column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    users: Mapped[List[UserModel]] = relationship(secondary=user_games_table, back_populates="games")
 
     def to_domain(self) -> Game:
         return Game(
@@ -29,9 +34,9 @@ class GameModel(Base):
             id = self.id
         )
 
-    @staticmethod
-    def from_domain(game: Game):
-        return GameModel(
+    @classmethod
+    def from_domain(cls, game: Game):
+        return cls(
             igdb_id = game.igdb_id,
             name = game.name,
             summary = game.summary,

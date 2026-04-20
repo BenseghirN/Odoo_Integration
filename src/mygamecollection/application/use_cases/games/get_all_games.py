@@ -2,7 +2,7 @@ from sqlalchemy import select
 
 from mygamecollection.application.interfaces.db_context import IGameCollectionDbContext
 from mygamecollection.domain.entities.game import Game
-from mygamecollection.infrastructure.database.models import GameModel
+from mygamecollection.infrastructure.database.models.game_model import GameModel
 
 
 class GetAllGamesAsync:
