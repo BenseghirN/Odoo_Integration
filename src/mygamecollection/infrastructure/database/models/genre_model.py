@@ -1,10 +1,12 @@
-from typing import List
+from __future__ import annotations
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy import Table, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from mygamecollection.infrastructure.database.base import Base
-from mygamecollection.infrastructure.database.models import GameModel
+if TYPE_CHECKING:
+    from mygamecollection.infrastructure.database.models import GameModel
 
 game_genre_table: Table = Table(
     "game_genres",

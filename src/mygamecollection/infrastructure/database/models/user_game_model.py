@@ -1,8 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from mygamecollection.domain.enums.game_status import GameStatus
-from mygamecollection.infrastructure.database.models import UserModel, GameModel
+if TYPE_CHECKING:
+    from mygamecollection.infrastructure.database.models import UserModel, GameModel
 from mygamecollection.infrastructure.database.base import Base
 
 class UserGameModel(Base):

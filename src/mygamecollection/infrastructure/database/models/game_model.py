@@ -20,7 +20,7 @@ class GameModel(Base):
     release_date : Mapped[str | None] = mapped_column(String)
     cover_url: Mapped[str | None] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    user_entries: Mapped[List[UserGameModel]] = relationship(back_populates="games")
+    user_entries: Mapped[List[UserGameModel]] = relationship(back_populates="game")
     genres: Mapped[List[GenreModel]] = relationship(secondary=game_genre_table, back_populates="games")
 
     def to_domain(self) -> Game:
