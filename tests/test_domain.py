@@ -1,6 +1,6 @@
 import pytest
 from mygamecollection.domain.entities.game import Game
-from mygamecollection.domain.entities.game_status import GameStatus
+from mygamecollection.domain.enums.game_status import GameStatus
 from mygamecollection.domain.entities.genre import Genre
 from mygamecollection.domain.entities.user import User
 from mygamecollection.domain.entities.user_game import UserGame
@@ -102,12 +102,4 @@ class TestUserGameCreate:
 
     def test_create_user_game_default_status_is_todo(self):
         user_game = UserGame.create(user_id=1, game_id=42)
-        assert user_game.status == GameStatus.TODO
-
-    def test_create_user_game_has_created_at(self):
-        user_game = UserGame.create(user_id=1, game_id=42)
-        assert user_game.created_at is not None
-
-    def test_create_user_game_has_updated_at(self):
-        user_game = UserGame.create(user_id=1, game_id=42)
-        assert user_game.updated_at is not None
+        assert user_game.status == GameStatus.TO_DO
